@@ -1,5 +1,4 @@
 import { Events } from "discord.js";
-import { commands } from "./commands";
 
 const listeners: Events[] = [
   Events.ClientReady,
@@ -8,4 +7,4 @@ const listeners: Events[] = [
   Events.MessageCreate,
 ];
 
-export { commands, listeners };
+export { listeners };

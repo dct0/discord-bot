@@ -1,8 +1,10 @@
 import currency from "currency.js";
-import { Interaction } from "discord.js";
+import { ApplicationCommandOptionType, BaseInteraction } from "discord.js";
+import { Command } from "../structures";
+import { CommandDef } from "../types";
 import { fx } from "../helpers";
 
-export default async (interaction: Interaction) => {
+const action = async (interaction: BaseInteraction) => {
   if (!interaction.isChatInputCommand()) return;
 
   try {
@@ -19,4 +21,41 @@ export default async (interaction: Interaction) => {
     console.error(error);
     await interaction.reply("There was an error with ur input lol");
   }
+};
+
+export const commandProps: CommandDef = {
+  enabled: true,
+  name: "cconvert",
+  description: "Converts currencies",
+  aliases: [],
+  usage: "/cconvert <amount> <from> <to>",
+  options: {
+    strings: [
+      {
+        type: ApplicationCommandOptionType.String,
+        name: "from",
+        description: "The currency to convert from",
+        required: true,
+      },
+      {
+        type: ApplicationCommandOptionType.String,
+        name: "to",
+        description: "The currency to convert to",
+        required: true,
+      },
+    ],
+    numbers: [
+      {
+        type: ApplicationCommandOptionType.Number,
+        name: "amount",
+        description: "The amount to convert",
+        required: true,
+      },
+    ],
+  },
+  action,
+};
+
+export default () => {
+  return new Command(commandProps);
 };

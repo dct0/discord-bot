@@ -1,32 +1,62 @@
-import { BaseInteraction, Collection, REST, Routes } from "discord.js";
+import {
+  BaseInteraction,
+  Collection,
+  GatewayIntentBits,
+  REST,
+  Routes,
+} from "discord.js";
 import * as dotenv from "dotenv";
-import { commands, listeners } from "./config";
+import path from "node:path";
+import fs from "node:fs";
+import { listeners } from "./config";
 import { Client, Command } from "./structures";
+import { CommandDef } from "./types";
 
 dotenv.config();
 
 console.log("Starting bot...");
 
-const client = new Client({ intents: [] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.commands = new Collection<string, Command>();
 
 const loadCommands = async () => {
-  for (const command of commands) {
-    if (!command.enabled)
-      return console.log(`Skipping ${command.name}: disabled`);
+  const commandsPath = path.join(__dirname, "commands");
+  const commandFiles = fs
+    .readdirSync(commandsPath)
+    .filter((file) => file.endsWith(".ts"));
 
-    let action: (interaction: BaseInteraction) => Promise<void>;
+  for (const commandFile of commandFiles) {
     try {
-      action = (await import(`./commands/${command.name}`)).default;
+      const {
+        commandProps,
+        default: getCommand,
+      }: { commandProps: CommandDef; default: () => Promise<Command> } =
+        await import(`./commands/${commandFile}`);
 
-      if (!action) return console.log(`Skipping ${command.name}: no action`);
+      const command = await getCommand();
+
+      if (!commandProps || !command) {
+        console.log(`Skipping ${commandFile}: no commandProps or command`);
+        continue;
+      }
+
+      if (!commandProps.enabled) {
+        console.log(`Skipping ${command.name}: disabled`);
+        continue;
+      } else if (!commandProps.action) {
+        console.log(`Skipping ${command.name}: no action`);
+        continue;
+      }
+
+      client.commands.set(command.name, command);
+      console.log(`Loaded command: ${command.name}`);
     } catch (error) {
-      return console.log(`Skipping ${command.name}: ${error}`);
+      console.error(error);
     }
-
-    client.commands.set(command.name, new Command({ ...command, action }));
   }
+
+  console.log(`Loaded: ${client.commands.size} commands`);
 };
 
 const deployCommands = async () => {
