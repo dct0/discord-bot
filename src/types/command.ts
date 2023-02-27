@@ -1,15 +1,15 @@
+import { BaseInteraction } from "discord.js";
+import { ValueOf } from "./helpers";
 import {
-  BaseInteraction,
-  SlashCommandAttachmentOption,
-  SlashCommandBooleanOption,
-  SlashCommandChannelOption,
-  SlashCommandIntegerOption,
-  SlashCommandMentionableOption,
-  SlashCommandNumberOption,
-  SlashCommandRoleOption,
-  SlashCommandStringOption,
-} from "discord.js";
-import { OmitFunctions, ValueOf } from "./helpers";
+  ApplicationCommandAttachmentOption,
+  ApplicationCommandBooleanOption,
+  ApplicationCommandChannelOption,
+  ApplicationCommandIntegerOption,
+  ApplicationCommandMentionableOption,
+  ApplicationCommandNumberOption,
+  ApplicationCommandRoleOption,
+  ApplicationCommandStringOption,
+} from "./options";
 
 export interface CommandDef {
   enabled: boolean;
@@ -22,17 +22,18 @@ export interface CommandDef {
 }
 
 export interface CommandOptions {
-  attachments?: SlashCommandAttachmentOption[];
-  booleans?: OmitFunctions<SlashCommandBooleanOption>[];
-  channels?: OmitFunctions<SlashCommandChannelOption>[];
-  integers?: OmitFunctions<SlashCommandIntegerOption>[];
-  mentionables?: OmitFunctions<SlashCommandMentionableOption>[];
-  numbers?: OmitFunctions<SlashCommandNumberOption>[];
-  roles?: OmitFunctions<SlashCommandRoleOption>[];
-  strings?: OmitFunctions<SlashCommandStringOption>[];
+  attachments?: ApplicationCommandAttachmentOption[];
+  booleans?: ApplicationCommandBooleanOption[];
+  channels?: ApplicationCommandChannelOption[];
+  integers?: ApplicationCommandIntegerOption[];
+  mentionables?: ApplicationCommandMentionableOption[];
+  numbers?: ApplicationCommandNumberOption[];
+  roles?: ApplicationCommandRoleOption[];
+  strings?: ApplicationCommandStringOption[];
   // subCommands?: SlashCommandSubcommandBuilder[];
   // subCommandGroups?: SlashCommandSubcommandGroupBuilder[];
 }
 
+// woo type safety!
 export type CommandOptionsKeys = keyof CommandOptions;
 export type CommandOptionsValues = ValueOf<CommandOptions>;
