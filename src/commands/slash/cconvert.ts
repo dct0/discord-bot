@@ -1,8 +1,8 @@
 import currency from "currency.js";
 import { ApplicationCommandOptionType, BaseInteraction } from "discord.js";
-import { Command } from "../structures";
-import { CommandDef } from "../types";
-import { fx } from "../helpers";
+import { SlashCommand } from "../../structures";
+import { SlashCommandDef } from "../../types";
+import { fx } from "../../helpers";
 
 const action = async (interaction: BaseInteraction) => {
   if (!interaction.isChatInputCommand()) return;
@@ -23,7 +23,7 @@ const action = async (interaction: BaseInteraction) => {
   }
 };
 
-export const commandProps: CommandDef = {
+export const commandProps: SlashCommandDef = {
   enabled: true,
   name: "cconvert",
   description: "Converts currencies",
@@ -57,5 +57,5 @@ export const commandProps: CommandDef = {
 };
 
 export default () => {
-  return new Command(commandProps);
+  return new SlashCommand(commandProps);
 };

@@ -1,4 +1,5 @@
 import { BaseInteraction } from "discord.js";
+import { BaseCommandDef } from "./baseCommand";
 import { ValueOf } from "./helpers";
 import {
   ApplicationCommandAttachmentOption,
@@ -11,17 +12,13 @@ import {
   ApplicationCommandStringOption,
 } from "./options";
 
-export interface CommandDef {
-  enabled: boolean;
-  name: string;
-  description: string;
+export interface SlashCommandDef extends BaseCommandDef<BaseInteraction> {
   aliases: string[];
   usage: string;
-  options?: CommandOptions;
-  action: (action: BaseInteraction) => Promise<void>;
+  options?: SlashCommandOptions;
 }
 
-export interface CommandOptions {
+export interface SlashCommandOptions {
   attachments?: ApplicationCommandAttachmentOption[];
   booleans?: ApplicationCommandBooleanOption[];
   channels?: ApplicationCommandChannelOption[];
@@ -30,10 +27,8 @@ export interface CommandOptions {
   numbers?: ApplicationCommandNumberOption[];
   roles?: ApplicationCommandRoleOption[];
   strings?: ApplicationCommandStringOption[];
-  // subCommands?: SlashCommandSubcommandBuilder[];
-  // subCommandGroups?: SlashCommandSubcommandGroupBuilder[];
 }
 
 // woo type safety!
-export type CommandOptionsKeys = keyof CommandOptions;
-export type CommandOptionsValues = ValueOf<CommandOptions>;
+export type SlashCommandOptionsKeys = keyof SlashCommandOptions;
+export type SlashCommandOptionsValues = ValueOf<SlashCommandOptions>;

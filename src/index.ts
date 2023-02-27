@@ -1,16 +1,14 @@
-import {
-  BaseInteraction,
-  Collection,
-  GatewayIntentBits,
-  REST,
-  Routes,
-} from "discord.js";
+import { Collection, GatewayIntentBits, REST, Routes } from "discord.js";
 import * as dotenv from "dotenv";
 import path from "node:path";
 import fs from "node:fs";
 import { listeners } from "./config";
-import { Client, Command } from "./structures";
-import { CommandDef } from "./types";
+import {
+  Client,
+  CommandTypes,
+  MessageCommand,
+  SlashCommand,
+} from "./structures";
 
 dotenv.config();
 
@@ -24,10 +22,12 @@ const client = new Client({
   ],
 });
 
-client.commands = new Collection<string, Command>();
+const commandFolders = ["message", "slash"] as const;
 
-const loadCommands = async () => {
-  const commandsPath = path.join(__dirname, "commands");
+const loadCommands = async (folder: (typeof commandFolders)[number]) => {
+  console.log(`Loading ${folder} commands...`);
+
+  const commandsPath = path.join(__dirname, "commands", folder);
   const commandFiles = fs
     .readdirSync(commandsPath)
     .filter((file) => file.endsWith(".ts"));
@@ -36,33 +36,38 @@ const loadCommands = async () => {
     try {
       const {
         commandProps,
-        default: getCommand,
-      }: { commandProps: CommandDef; default: () => Promise<Command> } =
-        await import(`./commands/${commandFile}`);
+        default: createCommand,
+      }: {
+        commandProps: CommandTypes;
+        default: () => Promise<CommandTypes>;
+      } = await import(`./commands/${folder}/${commandFile}`);
 
-      const command = await getCommand();
+      const command = await createCommand();
 
       if (!commandProps || !command) {
-        console.log(`Skipping ${commandFile}: no commandProps or command`);
+        console.log(`  Skipping ${commandFile}: no commandProps or command`);
         continue;
       }
 
       if (!commandProps.enabled) {
-        console.log(`Skipping ${command.name}: disabled`);
+        console.log(`  Skipping ${command.name}: disabled`);
         continue;
       } else if (!commandProps.action) {
-        console.log(`Skipping ${command.name}: no action`);
+        console.log(`  Skipping ${command.name}: no action`);
         continue;
       }
 
-      client.commands.set(command.name, command);
-      console.log(`Loaded command: ${command.name}`);
+      (client.commands[folder] as Collection<string, CommandTypes>).set(
+        command.name,
+        command
+      );
+      console.log(`  Loaded ${folder} command: ${command.name}`);
     } catch (error) {
       console.error(error);
     }
   }
 
-  console.log(`Loaded: ${client.commands.size} commands`);
+  console.log(`Loaded: ${client.commands[folder].size} commands`);
 };
 
 const deployCommands = async () => {
@@ -72,7 +77,7 @@ const deployCommands = async () => {
     process.env.BOT_TOKEN || ""
   );
 
-  const slashCommands = client.commands.map((cmd) =>
+  const commands = client.commands.slash.map((cmd) =>
     cmd.getBuilder({ as: "json" })
   );
 
@@ -81,14 +86,16 @@ const deployCommands = async () => {
       process.env.APP_ID || "",
       process.env.GUILD_ID || ""
     ),
-    { body: slashCommands }
+    { body: commands }
   )) as unknown[];
 
   console.log(`Successfully reloaded ${data.length} application (/) commands.`);
 };
 
 (async () => {
-  await loadCommands();
+  for (const folder of commandFolders) {
+    await loadCommands(folder);
+  }
 
   if (process.env.DEPLOY_COMMANDS === "true") {
     await deployCommands();

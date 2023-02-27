@@ -10,15 +10,19 @@ import {
   SlashCommandRoleOption,
   SlashCommandStringOption,
 } from "discord.js";
-import { CommandDef, CommandOptionsKeys, CommandOptionsValues } from "../types";
+import { BaseCommand } from ".";
+import {
+  SlashCommandDef,
+  SlashCommandOptionsKeys,
+  SlashCommandOptionsValues,
+} from "../types";
 
-export class Command implements CommandDef {
-  enabled: boolean;
-  name: string;
-  description: string;
+export class SlashCommand
+  extends BaseCommand<BaseInteraction>
+  implements SlashCommandDef
+{
   aliases: string[];
   usage: string;
-  action: (action: BaseInteraction) => Promise<void>;
 
   private builder: SlashCommandBuilder;
 
@@ -30,22 +34,18 @@ export class Command implements CommandDef {
     usage,
     options,
     action,
-  }: CommandDef) {
-    this.enabled = enabled;
-    this.name = name;
-    this.description = description;
+  }: SlashCommandDef) {
+    super({ enabled, name, description, action });
     this.aliases = aliases;
     this.usage = usage;
-
-    this.action = action;
 
     this.builder = new SlashCommandBuilder();
     this.builder.setName(name).setDescription(description);
 
     if (options) {
       for (const [_key, _value] of Object.entries(options)) {
-        const key = _key as CommandOptionsKeys;
-        const value = _value as CommandOptionsValues;
+        const key = _key as SlashCommandOptionsKeys;
+        const value = _value as SlashCommandOptionsValues;
         if (!value) continue;
 
         for (const option of value) {
@@ -109,16 +109,6 @@ export class Command implements CommandDef {
         }
       }
     }
-  }
-
-  async execute(action: BaseInteraction) {
-    if (!this.enabled) throw new Error("This command is disabled");
-
-    await this.action(action);
-  }
-
-  set setEnabled(enabled: boolean) {
-    this.enabled = enabled;
   }
 
   getBuilder({

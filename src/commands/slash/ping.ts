@@ -1,5 +1,5 @@
 import { BaseInteraction } from "discord.js";
-import { Command } from "../structures";
+import { SlashCommand } from "../../structures";
 
 export const action = async (interaction: BaseInteraction) => {
   if (!interaction.isChatInputCommand()) return;
@@ -16,5 +16,5 @@ export const commandProps = {
 };
 
 export default async () => {
-  return new Command(commandProps);
+  return new SlashCommand(commandProps);
 };

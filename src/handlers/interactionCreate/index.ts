@@ -1,11 +1,11 @@
 import { CommandInteraction } from "discord.js";
-import { Client } from "src/structures";
+import { Client } from "../../structures";
 
 const handleSlashCommand = async (
   client: Client,
   interaction: CommandInteraction
 ): Promise<void> => {
-  const command = client.commands.get(interaction.commandName);
+  const command = client.commands.slash.get(interaction.commandName);
 
   if (!command) {
     return console.error(`Command ${interaction.commandName} not found`);

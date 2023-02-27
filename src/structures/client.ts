@@ -1,10 +1,16 @@
-import { Client, ClientOptions, Collection } from "discord.js";
-import { Command } from "src/structures";
+import { Client, ClientOptions, Collection, Events } from "discord.js";
+import { MessageCommand, SlashCommand } from "../structures";
 
 export class CustomClient extends Client {
-  commands: Collection<string, Omit<Command, "name">> = new Collection();
-
+  commands: {
+    message: Collection<string, MessageCommand>;
+    slash: Collection<string, SlashCommand>;
+  };
   constructor(options: ClientOptions) {
     super(options);
+    this.commands = {
+      message: new Collection(),
+      slash: new Collection(),
+    };
   }
 }
