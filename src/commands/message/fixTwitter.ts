@@ -17,7 +17,7 @@ const action = async (message: Message) => {
   const fixed = message.cleanContent.replace(twitterRegex, "$1p$2");
 
   (message.channel as TextChannel).send(
-    `***Sent by ${message.author.username}*** - ${fixed}`
+    `***Sent by ${message.author.username}***:\n${fixed}`
   );
 
   // // TODO add reactions to undo the fix?
