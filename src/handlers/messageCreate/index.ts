@@ -8,9 +8,13 @@ const handleMessageCreate = (client: Client, message: Message) => {
       return;
     }
 
-    command.triggers.forEach((trigger) => {
+    command.triggers.forEach(async (trigger) => {
       if (trigger(message)) {
-        command.execute(message);
+        try {
+          await command.execute(message);
+        } catch (error) {
+          console.error(error);
+        }
         return;
       }
     });
