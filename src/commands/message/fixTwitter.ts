@@ -14,8 +14,10 @@ const action = async (message: Message) => {
 
   // await message.suppressEmbeds(true);
   // await (message.channel as TextChannel).send(fixedLinks?.join("\n"));
+  const fixed = message.cleanContent.replace(twitterRegex, "$1p$2");
+
   (message.channel as TextChannel).send(
-    message.cleanContent.replace(twitterRegex, "$1p$2")
+    `***Sent by ${message.author.username}*** - ${fixed}`
   );
 
   // // TODO add reactions to undo the fix?
