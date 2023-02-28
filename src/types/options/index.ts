@@ -11,41 +11,41 @@ import {
 import { WithRequired } from "../helpers";
 
 export type ApplicationCommandAttachmentOption = WithRequired<
-  APIApplicationCommandAttachmentOption,
+  Omit<APIApplicationCommandAttachmentOption, "name">,
   "required"
 >;
 
 export type ApplicationCommandBooleanOption = WithRequired<
-  APIApplicationCommandBooleanOption,
+  Omit<APIApplicationCommandBooleanOption, "name">,
   "required"
 >;
 
 export type ApplicationCommandChannelOption = WithRequired<
-  APIApplicationCommandChannelOption,
+  Omit<APIApplicationCommandChannelOption, "name">,
   "required"
 >;
 
 export type ApplicationCommandIntegerOption = WithRequired<
-  APIApplicationCommandIntegerOption,
+  Omit<APIApplicationCommandIntegerOption, "name">,
   "required"
 >;
 
 export type ApplicationCommandMentionableOption = WithRequired<
-  APIApplicationCommandMentionableOption,
+  Omit<APIApplicationCommandMentionableOption, "name">,
   "required"
 >;
 
 export type ApplicationCommandNumberOption = WithRequired<
-  APIApplicationCommandNumberOption,
+  Omit<APIApplicationCommandNumberOption, "name">,
   "required"
 >;
 
 export type ApplicationCommandRoleOption = WithRequired<
-  APIApplicationCommandRoleOption,
+  Omit<APIApplicationCommandRoleOption, "name">,
   "required"
 >;
 
 export type ApplicationCommandStringOption = WithRequired<
-  APIApplicationCommandStringOption,
+  Omit<APIApplicationCommandStringOption, "name">,
   "required"
 >;

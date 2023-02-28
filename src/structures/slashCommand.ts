@@ -1,5 +1,7 @@
 import {
+  ApplicationCommandOptionType,
   BaseInteraction,
+  Collection,
   SlashCommandAttachmentOption,
   SlashCommandBooleanOption,
   SlashCommandBuilder,
@@ -13,6 +15,7 @@ import {
 import { BaseCommand } from ".";
 import {
   SlashCommandDef,
+  SlashCommandOptionsCollectionValues,
   SlashCommandOptionsKeys,
   SlashCommandOptionsValues,
 } from "../types";
@@ -32,6 +35,7 @@ export class SlashCommand
     description,
     aliases,
     usage,
+    optionsOrder,
     options,
     action,
   }: SlashCommandDef) {
@@ -42,70 +46,84 @@ export class SlashCommand
     this.builder = new SlashCommandBuilder();
     this.builder.setName(name).setDescription(description);
 
-    if (options) {
-      for (const [_key, _value] of Object.entries(options)) {
-        const key = _key as SlashCommandOptionsKeys;
-        const value = _value as SlashCommandOptionsValues;
-        if (!value) continue;
+    if (!optionsOrder && options)
+      throw new Error("optionsOrder is required when options are provided");
+    else if (optionsOrder && !options)
+      throw new Error("options are required when optionsOrder is provided");
+    else if (optionsOrder && options) {
+      let optionCollections: Collection<string, SlashCommandOptionsValues>[] =
+        [];
+      for (const [key, value] of Object.entries(options)) {
+        if (!key) continue;
+        optionCollections.push(value);
+      }
 
-        for (const option of value) {
-          switch (key) {
-            case "attachments":
-              const attachmentOption = new SlashCommandAttachmentOption()
-                .setName(option.name)
-                .setDescription(option.description)
-                .setRequired(option.required);
-              this.builder.addAttachmentOption(attachmentOption);
-            // and the rest to come...
-            case "booleans":
-              const booleanOption = new SlashCommandBooleanOption()
-                .setName(option.name)
-                .setDescription(option.description)
-                .setRequired(option.required);
-              this.builder.addBooleanOption(booleanOption);
-            case "channels":
-              const channelOption = new SlashCommandChannelOption()
-                .setName(option.name)
-                .setDescription(option.description)
-                .setRequired(option.required);
-              this.builder.addChannelOption(channelOption);
-              break;
-            case "integers":
-              const integerOption = new SlashCommandIntegerOption()
-                .setName(option.name)
-                .setDescription(option.description)
-                .setRequired(option.required);
-              this.builder.addIntegerOption(integerOption);
-              break;
-            case "mentionables":
-              const mentionableOption = new SlashCommandMentionableOption()
-                .setName(option.name)
-                .setDescription(option.description)
-                .setRequired(option.required);
-              this.builder.addMentionableOption(mentionableOption);
-              break;
-            case "numbers":
-              const numberOption = new SlashCommandNumberOption()
-                .setName(option.name)
-                .setDescription(option.description)
-                .setRequired(option.required);
-              this.builder.addNumberOption(numberOption);
-              break;
-            case "roles":
-              const roleOption = new SlashCommandRoleOption()
-                .setName(option.name)
-                .setDescription(option.description)
-                .setRequired(option.required);
-              this.builder.addRoleOption(roleOption);
-              break;
-            case "strings":
-              const stringOption = new SlashCommandStringOption()
-                .setName(option.name)
-                .setDescription(option.description)
-                .setRequired(option.required);
-              this.builder.addStringOption(stringOption);
-              break;
-          }
+      const allOptions = new Collection().concat(
+        ...optionCollections
+      ) as Collection<string, SlashCommandOptionsCollectionValues>;
+
+      for (const optionKey of optionsOrder) {
+        const option = allOptions.get(optionKey);
+        if (!option) {
+          throw new Error(`Option ${optionKey} is not defined in options`);
+        }
+
+        switch (option.type) {
+          case ApplicationCommandOptionType.Attachment:
+            const attachmentOption = new SlashCommandAttachmentOption()
+              .setName(optionKey)
+              .setDescription(option.description)
+              .setRequired(option.required);
+            this.builder.addAttachmentOption(attachmentOption);
+          // and the rest to come...
+          case ApplicationCommandOptionType.Boolean:
+            const booleanOption = new SlashCommandBooleanOption()
+              .setName(optionKey)
+              .setDescription(option.description)
+              .setRequired(option.required);
+            this.builder.addBooleanOption(booleanOption);
+          case ApplicationCommandOptionType.Channel:
+            const channelOption = new SlashCommandChannelOption()
+              .setName(optionKey)
+              .setDescription(option.description)
+              .setRequired(option.required);
+            this.builder.addChannelOption(channelOption);
+            break;
+          case ApplicationCommandOptionType.Integer:
+            const integerOption = new SlashCommandIntegerOption()
+              .setName(optionKey)
+              .setDescription(option.description)
+              .setRequired(option.required);
+            this.builder.addIntegerOption(integerOption);
+            break;
+          case ApplicationCommandOptionType.Mentionable:
+            const mentionableOption = new SlashCommandMentionableOption()
+              .setName(optionKey)
+              .setDescription(option.description)
+              .setRequired(option.required);
+            this.builder.addMentionableOption(mentionableOption);
+            break;
+          case ApplicationCommandOptionType.Number:
+            const numberOption = new SlashCommandNumberOption()
+              .setName(optionKey)
+              .setDescription(option.description)
+              .setRequired(option.required);
+            this.builder.addNumberOption(numberOption);
+            break;
+          case ApplicationCommandOptionType.Role:
+            const roleOption = new SlashCommandRoleOption()
+              .setName(optionKey)
+              .setDescription(option.description)
+              .setRequired(option.required);
+            this.builder.addRoleOption(roleOption);
+            break;
+          case ApplicationCommandOptionType.String:
+            const stringOption = new SlashCommandStringOption()
+              .setName(optionKey)
+              .setDescription(option.description)
+              .setRequired(option.required);
+            this.builder.addStringOption(stringOption);
+            break;
         }
       }
     }

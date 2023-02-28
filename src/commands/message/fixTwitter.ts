@@ -22,9 +22,9 @@ const action = async (message: Message) => {
     console.error(error);
   }
 
-  // TODO add reactions to undo the fix
+  // TODO add reactions to undo the fix?
   console.log(
-    `Fixed ${links.length} Twitter links in ${message.guild?.name} (${message.channel.id})`
+    `Fixed ${links.length} Twitter links in ${message.channel.id} (${message.guild?.name})`
   );
 };
 

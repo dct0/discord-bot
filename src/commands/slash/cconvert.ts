@@ -1,22 +1,35 @@
-import currency from "currency.js";
-import { ApplicationCommandOptionType, BaseInteraction } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  BaseInteraction,
+  Collection,
+} from "discord.js";
 import { SlashCommand } from "../../structures";
 import { SlashCommandDef } from "../../types";
-import { fx } from "../../helpers";
+const CC = require("currency-converter-lt");
 
 const action = async (interaction: BaseInteraction) => {
   if (!interaction.isChatInputCommand()) return;
 
   try {
-    const from = interaction.options.get("from", true)?.value;
-    const to = interaction.options.get("to", true)?.value;
-    const amount = currency(
-      interaction.options.get("amount", true)?.value as any
-    ) as unknown as string;
+    const from = interaction.options
+      .get("from", true)
+      .value?.toString()
+      .toUpperCase();
+    const to = interaction.options
+      .get("to", true)
+      .value?.toString()
+      .toUpperCase();
+    const amount = interaction.options.get("amount", true).value;
 
-    const converted = fx.convert(amount, { from, to }).convert().toFixed(2);
+    if (!from || !to || !amount) return;
 
-    await interaction.reply(`${amount} ${from} is ${converted} ${to}`);
+    const cc = new CC({ from, to, amount });
+
+    const converted = await cc.convert();
+
+    await interaction.reply(
+      `${amount} ${from} is ${converted.toFixed(2)} ${to}`
+    );
   } catch (error) {
     console.error(error);
     await interaction.reply("There was an error with ur input lol");
@@ -29,29 +42,37 @@ export const commandProps: SlashCommandDef = {
   description: "Converts currencies",
   aliases: [],
   usage: "/cconvert <amount> <from> <to>",
+  optionsOrder: ["amount", "from", "to"],
   options: {
-    strings: [
-      {
-        type: ApplicationCommandOptionType.String,
-        name: "from",
-        description: "The currency to convert from",
-        required: true,
-      },
-      {
-        type: ApplicationCommandOptionType.String,
-        name: "to",
-        description: "The currency to convert to",
-        required: true,
-      },
-    ],
-    numbers: [
-      {
-        type: ApplicationCommandOptionType.Number,
-        name: "amount",
-        description: "The amount to convert",
-        required: true,
-      },
-    ],
+    strings: new Collection([
+      [
+        "from",
+        {
+          type: ApplicationCommandOptionType.String,
+          description: "The currency to convert from",
+          required: true,
+        },
+      ],
+      [
+        "to",
+        {
+          type: ApplicationCommandOptionType.String,
+          description: "The currency to convert to",
+          required: true,
+        },
+      ],
+    ]),
+    numbers: new Collection([
+      [
+        "amount",
+        {
+          type: ApplicationCommandOptionType.Number,
+          name: "amount",
+          description: "The amount to convert",
+          required: true,
+        },
+      ],
+    ]),
   },
   action,
 };

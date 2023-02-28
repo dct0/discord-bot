@@ -67,11 +67,11 @@ const loadCommands = async (folder: (typeof commandFolders)[number]) => {
     }
   }
 
-  console.log(`Loaded: ${client.commands[folder].size} commands`);
+  console.log(`Loaded: ${client.commands[folder].size} ${folder} commands`);
 };
 
-const deployCommands = async () => {
-  console.log("Deploying commands...");
+const deploySlashCommands = async () => {
+  console.log("Deploying slash commands...");
 
   const rest = new REST({ version: "10" }).setToken(
     process.env.BOT_TOKEN || ""
@@ -97,8 +97,8 @@ const deployCommands = async () => {
     await loadCommands(folder);
   }
 
-  if (process.env.DEPLOY_COMMANDS === "true") {
-    await deployCommands();
+  if (process.env.DEPLOY_SLASH_COMMANDS === "true") {
+    await deploySlashCommands();
   }
 
   for (const listener of listeners) {
