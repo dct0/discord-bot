@@ -2,11 +2,14 @@
 
 ![Builder](https://cdn.discordapp.com/attachments/287551742667915264/1080095931946500106/7cqdlt.png)
 
-## Installation
+## Setup
 
 ```
 yarn
 ```
+
+- Rename `example.env` to `.env`
+- Make sure `DEPLOY_SLASH_COMMANDS=true` for first time setup
 
 ## Start
 

@@ -77,10 +77,7 @@ const deploySlashCommands = async () => {
   );
 
   const data = (await rest.put(
-    Routes.applicationGuildCommands(
-      process.env.APP_ID || "",
-      process.env.GUILD_ID || ""
-    ),
+    Routes.applicationCommands(process.env.APP_ID || ""),
     { body: commands }
   )) as unknown[];
 
