@@ -16,6 +16,10 @@ yarn start
 
 ## Configuration
 
-- Edit `./src/config/commands.ts` to edit command info
-- (Slash) commands are in `./src/commands`
+- Slash commands are in `./src/commands/slash`
+  - Only option `name`, `description`, and `required` properties are parsed at the moment
+- Message commands are in `./src/commands/message`
+  - You can configure their triggers in the `triggers` property
+  - When at least one of the conditions are met, it will run
 - Stuff triggered by events are in `./src/handlers`
+  - Enable or disable them in `./config/index.ts`
