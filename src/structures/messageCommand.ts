@@ -6,7 +6,7 @@ export class MessageCommand
   extends BaseCommand<Message>
   implements MessageCommandDef
 {
-  triggers?: ((message?: Message) => boolean)[];
+  triggers?: ((message: Message) => boolean)[];
 
   constructor({
     enabled,

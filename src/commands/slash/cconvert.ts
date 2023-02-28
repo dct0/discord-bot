@@ -5,6 +5,7 @@ import {
 } from "discord.js";
 import { SlashCommand } from "../../structures";
 import { SlashCommandDef } from "../../types";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const CC = require("currency-converter-lt");
 
 const action = async (interaction: BaseInteraction) => {

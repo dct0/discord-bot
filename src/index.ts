@@ -1,14 +1,9 @@
 import { Collection, GatewayIntentBits, REST, Routes } from "discord.js";
 import * as dotenv from "dotenv";
-import path from "node:path";
 import fs from "node:fs";
+import path from "node:path";
 import { listeners } from "./config";
-import {
-  Client,
-  CommandTypes,
-  MessageCommand,
-  SlashCommand,
-} from "./structures";
+import { Client, CommandTypes } from "./structures";
 
 dotenv.config();
 

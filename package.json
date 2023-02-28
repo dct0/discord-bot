@@ -5,6 +5,8 @@
   "main": "src/index.ts",
   "scripts": {
     "start": "nodemon",
+    "lint": "eslint . --ext .ts --ignore-pattern node_modules",
+    "lint:fix": "yarn lint --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -17,6 +19,8 @@
   },
   "devDependencies": {
     "@types/node": "^18.14.1",
+    "@typescript-eslint/eslint-plugin": "^5.54.0",
+    "@typescript-eslint/parser": "^5.54.0",
     "eslint": "^8.34.0",
     "nodemon": "^2.0.20",
     "prettier": "^2.8.4",

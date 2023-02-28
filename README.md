@@ -1,6 +1,6 @@
 # discord-bot
 
-![Builder](https://cdn.discordapp.com/attachments/287551742667915264/1079746934119608370/7clwhf.png)
+![Builder](https://cdn.discordapp.com/attachments/287551742667915264/1080095931946500106/7cqdlt.png)
 
 ## Installation
 
