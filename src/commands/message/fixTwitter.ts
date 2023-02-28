@@ -1,7 +1,8 @@
 import { Message, TextChannel } from "discord.js";
-import { twitterRegex } from "../../helpers/twitter";
 import { MessageCommand } from "../../structures";
 import { MessageCommandDef } from "../../types";
+
+const twitterRegex = /(https:\/\/twitt)e(r.com\/.+?\/status\/\d+)([^\s]*)/g;
 
 const action = async (message: Message) => {
   if (!message.channel.isTextBased()) return;
