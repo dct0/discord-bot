@@ -2,7 +2,6 @@ import { Collection, GatewayIntentBits, REST, Routes } from "discord.js";
 import * as dotenv from "dotenv";
 import fs from "node:fs";
 import path from "node:path";
-import { listeners } from "./config";
 import { Client, CommandTypes } from "./structures";
 
 dotenv.config();
@@ -16,6 +15,28 @@ const client = new Client({
     GatewayIntentBits.MessageContent,
   ],
 });
+
+const loadListeners = async () => {
+  console.log("Loading listeners...");
+
+  const listenersPath = path.join(__dirname, "listeners");
+  const listenerFiles = fs
+    .readdirSync(listenersPath)
+    .filter((file) => file.endsWith(".ts"));
+
+  for (const listenerFile of listenerFiles) {
+    try {
+      const { default: listenerFunction } = await import(
+        `./listeners/${listenerFile}`
+      );
+
+      listenerFunction(client);
+      console.log(`  Loaded listener: ${listenerFile}`);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+};
 
 const commandFolders = ["message", "slash"] as const;
 
@@ -85,19 +106,14 @@ const deploySlashCommands = async () => {
 };
 
 (async () => {
+  await loadListeners();
+
   for (const folder of commandFolders) {
     await loadCommands(folder);
   }
 
   if (process.env.DEPLOY_SLASH_COMMANDS === "true") {
     await deploySlashCommands();
-  }
-
-  for (const listener of listeners) {
-    const { default: listenerFunction } = await import(
-      `./listeners/${listener}`
-    );
-    listenerFunction(client);
   }
 })();
 

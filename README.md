@@ -25,4 +25,3 @@ yarn start
   - You can configure their triggers in the `triggers` property
   - When at least one of the conditions are met, it will run
 - Stuff triggered by events are in `./src/handlers`
-  - Enable or disable them in `./config/index.ts`
