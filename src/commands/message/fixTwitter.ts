@@ -16,8 +16,9 @@ const action = async (message: Message) => {
   // await (message.channel as TextChannel).send(fixedLinks?.join("\n"));
   const fixed = message.cleanContent.replace(twitterRegex, "$1p$2");
 
+  await message.delete();
   (message.channel as TextChannel).send(
-    `***Sent by ${message.author.username}***:\n${fixed}`
+    `Sent by ***${message.author.username}***:\n${fixed}`
   );
 
   // // TODO add reactions to undo the fix?
