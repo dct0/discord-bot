@@ -1,10 +1,7 @@
 import { Collection, GatewayIntentBits, REST, Routes } from "discord.js";
-import * as dotenv from "dotenv";
 import fs from "node:fs";
 import path from "node:path";
 import { Client, CommandTypes } from "./structures";
-
-dotenv.config();
 
 console.log("Starting bot...");
 

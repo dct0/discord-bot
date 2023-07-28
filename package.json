@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "start": "nodemon",
+    "start": "ts-node src/index.ts",
+    "dev": "nodemon",
     "lint": "eslint . --ext .ts --ignore-pattern node_modules",
     "lint:fix": "yarn lint --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,8 +15,7 @@
   "dependencies": {
     "currency-converter-lt": "^2.0.0",
     "discord-api-types": "^0.37.50",
-    "discord.js": "^14.11.0",
-    "dotenv": "^16.3.1"
+    "discord.js": "^14.11.0"
   },
   "devDependencies": {
     "@types/node": "^20.4.5",
