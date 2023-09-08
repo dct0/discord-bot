@@ -1,7 +1,11 @@
+import "dotenv/config";
+
 import { Collection, GatewayIntentBits, REST, Routes } from "discord.js";
 import fs from "node:fs";
 import path from "node:path";
 import { Client, CommandTypes } from "./structures";
+
+const FILE_EXTENSION = process.env.NODE_ENV === "production" ? ".js" : ".ts";
 
 console.log("Starting bot...");
 
@@ -19,7 +23,7 @@ const loadListeners = async () => {
   const listenersPath = path.join(__dirname, "listeners");
   const listenerFiles = fs
     .readdirSync(listenersPath)
-    .filter((file) => file.endsWith(".ts"));
+    .filter((file) => file.endsWith(FILE_EXTENSION));
 
   for (const listenerFile of listenerFiles) {
     try {
@@ -43,7 +47,7 @@ const loadCommands = async (folder: (typeof commandFolders)[number]) => {
   const commandsPath = path.join(__dirname, "commands", folder);
   const commandFiles = fs
     .readdirSync(commandsPath)
-    .filter((file) => file.endsWith(".ts"));
+    .filter((file) => file.endsWith(FILE_EXTENSION));
 
   for (const commandFile of commandFiles) {
     try {
