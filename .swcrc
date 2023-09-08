@@ -1,0 +1,16 @@
+{
+  "jsc": {
+    "parser": {
+      "syntax": "typescript",
+      "tsx": false,
+      "decorators": true,
+      "dynamicImport": true
+    },
+    "target": "es2021"
+  },
+  "exclude": ["node_modules", ".git", "types"],
+  "module": {
+    "type": "commonjs"
+  },
+  "minify": true
+}

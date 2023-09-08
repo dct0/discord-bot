@@ -1,21 +1,17 @@
 # discord-bot
 
-![Builder](https://cdn.discordapp.com/attachments/287551742667915264/1080095931946500106/7cqdlt.png)
-
-## Setup
-
-```
-yarn
-```
-
-- Rename `example.env` to `.env`
-- Make sure `DEPLOY_SLASH_COMMANDS=true` for first time setup
+but dockerized
 
 ## Start
 
+Docker run:
+
+```sh
+docker run -d -e BOT_TOKEN=changeme -e APP_ID=changme -e DEPLOY_SLASH_COMMANDS=true fourilent/discord-bot
 ```
-yarn start
-```
+
+Docker compose:
+See [docker-compose.yml](/docker-compose.yml)
 
 ## Configuration
 

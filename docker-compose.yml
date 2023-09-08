@@ -1,0 +1,11 @@
+version: "3.7"
+
+services:
+  app:
+    image: fourilent/discord-bot:latest
+    container_name: discord-bot
+    restart: unless-stopped
+    environment:
+      - BOT_TOKEN=changeme
+      - APP_ID=changeme
+      - DEPLOY_SLASH_COMMANDS=true
